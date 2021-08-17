@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import firebase from '../../utils/firebase';
-import md5 from 'md5';
 import {
   Grid,
   Form,
@@ -37,9 +36,7 @@ export default class Login extends Component {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then((signedInUser) => {
-          console.log(signedInUser);
-        })
+        .then((signedInUser) => {})
         .catch((err) => {
           console.error(err.message);
           this.setState({

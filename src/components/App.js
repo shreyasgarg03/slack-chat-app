@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 // css //
 import './App.css';
 
-function App() {
-  return (
-    <div className=''>
-      <h1> Slack Chat App!!</h1>
-    </div>
-  );
+class App extends Component {
+  componentDidMount() {
+    console.log(this.props.history);
+  }
+  render() {
+    return (
+      <div className=''>
+        <h1> Slack Chat App!!</h1>
+      </div>
+    );
+  }
 }
 
-export default App;
+export default withRouter(App);
