@@ -1,20 +1,24 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React from 'react';
+import { Grid } from 'semantic-ui-react';
 
 // css //
 import './App.css';
+import ColorPanel from './ColorPanel/ColorPanel';
+import Messages from './Messages/Messages';
+import MetaPanel from './MetaPanel/MetaPanel';
+import SidePanel from './SidePanel/SidePanel';
 
-class App extends Component {
-  componentDidMount() {
-    console.log(this.props.history);
-  }
-  render() {
-    return (
-      <div className=''>
-        <h1> Slack Chat App!!</h1>
-      </div>
-    );
-  }
-}
+const App = () => {
+  return (
+    <div>
+      <Grid>
+        <ColorPanel />
+        <SidePanel />
+        <Messages />
+        <MetaPanel />
+      </Grid>
+    </div>
+  );
+};
 
-export default withRouter(App);
+export default App;
