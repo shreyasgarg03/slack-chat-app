@@ -12,7 +12,7 @@ import firebase from './utils/firebase';
 import { compose, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { setUser } from './actions/index';
+import { setUser, clearUser } from './actions/index';
 
 // compoenents //
 import App from './components/App';
@@ -34,12 +34,16 @@ class Root extends Component {
         console.log(user);
         this.props.setUser(user);
         this.props.history.push('/');
+      } else {
+        console.log('clear user push to login');
+        this.props.clearUser();
+        this.props.history.push('/login');
       }
     });
   }
   render() {
     return this.props.isLoading ? (
-      <Spinner />
+      <Spinner loading={this.props.isLoading} />
     ) : (
       <Switch>
         <Route exact path='/' component={App} />
@@ -55,7 +59,9 @@ const mapStateToProps = (state) => ({
   isLoading: state.user.isLoading,
 });
 
-const RootWithAuth = withRouter(connect(mapStateToProps, { setUser })(Root));
+const RootWithAuth = withRouter(
+  connect(mapStateToProps, { setUser, clearUser })(Root)
+);
 
 ReactDOM.render(
   <Provider store={store}>

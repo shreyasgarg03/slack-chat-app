@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from 'semantic-ui-react';
+import { Grid, GridColumn } from 'semantic-ui-react';
 
 // css //
 import './App.css';
@@ -11,11 +11,15 @@ import SidePanel from './SidePanel/SidePanel';
 const App = () => {
   return (
     <div>
-      <Grid>
+      <Grid columns='equal' className='app' style={{ backgroundColor: '#eee' }}>
         <ColorPanel />
         <SidePanel />
-        <Messages />
-        <MetaPanel />
+        <GridColumn style={{ marginLeft: 320 }}>
+          <Messages />
+        </GridColumn>
+        <GridColumn width={4}>
+          <MetaPanel />
+        </GridColumn>
       </Grid>
     </div>
   );
