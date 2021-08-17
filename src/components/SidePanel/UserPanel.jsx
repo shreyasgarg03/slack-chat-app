@@ -7,12 +7,23 @@ import {
   Header,
   HeaderContent,
   Icon,
+  Image,
 } from 'semantic-ui-react';
 import firebase from '../../utils/firebase';
 
-import { clearUser } from '../../actions/index';
+import { connect } from 'react-redux';
 
-export default class UserPanel extends Component {
+class UserPanel extends Component {
+  state = {
+    user: this.props.currentUser,
+  };
+  // componentDidMount() {
+  //   console.log(this.props.currentUser);
+  //   this.setState({
+  //     user: this.props.currentUser,
+  //   });
+  // }
+
   handleSignout = () => {
     firebase
       .auth()
@@ -24,7 +35,8 @@ export default class UserPanel extends Component {
     {
       text: (
         <span>
-          Signed in as <strong>User</strong>
+          Signed in as{' '}
+          <strong>{this.state.user && this.state.user.displayName}</strong>
         </span>
       ),
       disabled: true,
@@ -40,6 +52,7 @@ export default class UserPanel extends Component {
     },
   ];
   render() {
+    const { user } = this.state;
     return (
       <Grid style={{ background: '#4c3c4c' }}>
         <GridColumn>
@@ -49,17 +62,24 @@ export default class UserPanel extends Component {
               <Icon name='code'></Icon>
               <HeaderContent>DevChat</HeaderContent>
             </Header>
-          </GridRow>
 
-          {/* User Dropdown */}
-          <Header style={{ padding: '0.25em' }} as='h4' inverted>
-            <Dropdown
-              trigger={<span>User</span>}
-              options={this.dropDownOptions()}
-            />
-          </Header>
+            {/* User Dropdown */}
+            <Header style={{ padding: '0.25em' }} as='h4' inverted>
+              <Dropdown
+                trigger={
+                  <span>
+                    <Image src={user && user.photoURL} avatar spaced='right' />
+                    {user && user.displayName}
+                  </span>
+                }
+                options={this.dropDownOptions()}
+              />
+            </Header>
+          </GridRow>
         </GridColumn>
       </Grid>
     );
   }
 }
+
+export default UserPanel;
