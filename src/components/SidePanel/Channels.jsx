@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   Menu,
   MenuItem,
@@ -15,6 +16,7 @@ import {
 } from 'semantic-ui-react';
 
 import firebase from '../../utils/firebase';
+import { setCurrentChannel } from '../../actions/index';
 
 class Channels extends Component {
   state = {
@@ -24,6 +26,32 @@ class Channels extends Component {
     channelDetail: '',
     modal: false,
     channelRef: firebase.database().ref('channles'),
+    firstLoad: true,
+    activeChannel: '',
+  };
+
+  componentDidMount = () => {
+    this.addListners();
+  };
+
+  addListners = () => {
+    let loadedChannels = [];
+    this.state.channelRef.on('child_added', (snap) => {
+      loadedChannels.push(snap.val());
+      this.setState({ channels: loadedChannels }, () => this.setFirstChannel());
+    });
+  };
+
+  setFirstChannel = () => {
+    if (this.state.firstLoad && this.state.channels.length) {
+      this.props.setCurrentChannel(this.state.channels[0]);
+      this.setState({ activeChannel: this.state.channels[0].id });
+    }
+    this.setState({ firstLoad: false });
+  };
+
+  setActiveChannel = (channel) => {
+    this.setState({ activeChannel: channel.id });
   };
 
   isFormValid = ({ channelName, channelDetail }) => {
@@ -56,11 +84,30 @@ class Channels extends Component {
       });
   };
 
+  displayChannels = (channels) =>
+    channels.length > 0 &&
+    channels.map((channel) => (
+      <MenuItem
+        key={channel.id}
+        onClick={() => this.changeChannel(channel)}
+        name={channel.name}
+        style={{ opacity: 0.7 }}
+        active={channel.id === this.state.activeChannel}
+      >
+        # {channel.name}
+      </MenuItem>
+    ));
+
   openModal = () => {
     this.setState({ modal: true });
   };
   closeModal = () => {
     this.setState({ modal: false });
+  };
+
+  changeChannel = (channel) => {
+    this.setActiveChannel(channel);
+    this.props.setCurrentChannel(channel);
   };
 
   handleChange = (e) => {
@@ -72,7 +119,7 @@ class Channels extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     if (this.isFormValid(this.state)) {
-      this.addChannle();
+      this.addChannel();
     }
   };
 
@@ -81,14 +128,15 @@ class Channels extends Component {
     return (
       <>
         <MenuMenu style={{ paddingBottom: '2em' }}>
-          <MenuItem>
+          <MenuItem style={{ marginBottom: 10 }}>
             <span>
               <Icon name='exchange' /> CHANNELS
             </span>{' '}
             ({channels.length}) <Icon name='add' onClick={this.openModal} />
           </MenuItem>
+          {/* all channels */}
+          {this.displayChannels(channels)}
         </MenuMenu>
-        {/* all channels */}
         <Modal basic open={modal} onClose={this.closeModal}>
           <ModalHeader>Add a Channel</ModalHeader>
           <ModalContent>
@@ -127,4 +175,4 @@ class Channels extends Component {
   }
 }
 
-export default Channels;
+export default connect(null, { setCurrentChannel })(Channels);
