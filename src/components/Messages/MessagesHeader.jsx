@@ -9,19 +9,23 @@ import {
 
 class MessagesHeader extends Component {
   render() {
+    const { channelName, numUniqueUsers, handleSearchChange, searchLoading } =
+      this.props;
     return (
       <Segment clearing>
         {/* channel search title */}
         <Header fluid='true' as='h2' floated='left' style={{ marginBottom: 0 }}>
           <span>
-            Channel
+            {channelName}
             <Icon name={'star outline'} color='black' />
           </span>
-          <HeaderSubheader>2 Users</HeaderSubheader>
+          <HeaderSubheader>{numUniqueUsers}</HeaderSubheader>
         </Header>
         {/* channel search input */}
         <Header floated='right'>
           <Input
+            loading={searchLoading}
+            onChange={handleSearchChange}
             size='mini'
             icon='search'
             name='searchTer'
